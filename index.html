@@ -1,11 +1,11 @@
 <!doctype html>
 <html lang="ko">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#fafaf8"><meta name="description" content="하루와 생각을 기록합니다."><title>사이</title><link rel="stylesheet" href="style.css?v=3"><script src="app.js?v=3" defer></script></head>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#fafaf8"><meta name="description" content="하루와 생각을 기록합니다."><title>일기장</title><link rel="stylesheet" href="style.css?v=4"><script src="app.js?v=4" defer></script></head>
 <body>
 <main>
-<header><a class="brand" href="./">사이.</a><button id="open-archive">기록</button></header>
+<header><a class="brand" href="./">일기장</a><button id="open-archive">기록</button></header>
 <article id="entry" aria-live="polite"><time id="date"></time><h1 id="title"></h1><div id="body"><p class="muted">글을 불러오는 중입니다.</p></div></article>
 <nav class="entry-nav" aria-label="글 탐색"><a id="older" hidden>← 이전 글</a><a id="source" hidden>원문 ↗</a><a id="newer" hidden>다음 글 →</a></nav>
 </main>
-<dialog id="archive"><div class="archive-header"><h2>기록</h2><button id="close-archive">닫기</button></div><div id="entries"></div></dialog>
+<dialog id="archive"><div class="archive-header"><h2>기록</h2><button id="close-archive">닫기</button></div><div class="calendar-heading"><h3 id="month-label"></h3><div><button id="prev" aria-label="이전 달">‹</button><button id="next" aria-label="다음 달">›</button></div></div><div class="weekdays" aria-hidden="true"><span>일</span><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span>토</span></div><div id="calendar" class="calendar" aria-label="날짜별 기록"></div><label class="search"><span class="sr-only">일기 검색</span><input id="search" type="search" placeholder="기록 검색" aria-label="일기 검색"></label><div id="entries" aria-live="polite"></div></dialog>
 </body></html>
