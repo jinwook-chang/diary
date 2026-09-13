@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="ko">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#f7f5ef"><meta name="description" content="하루의 작은 순간을 모으는 나만의 다이어리"><title>사이 · 하루를 담는 작은 공간</title><link rel="stylesheet" href="style.css"><script src="app.js" defer></script></head>
+<body>
+<aside class="sidebar">
+<a class="brand" href="./" aria-label="사이 홈">사이<span class="brand-dot">.</span></a><p class="tagline">하루와 하루 사이, 나의 기록</p>
+<button class="today-button" id="today">＋ 오늘의 기록 쓰기</button>
+<div class="calendar-heading"><h2 id="month-label"></h2><div><button id="prev" aria-label="이전 달">‹</button><button id="next" aria-label="다음 달">›</button></div></div>
+<div class="weekdays" aria-hidden="true"><span>일</span><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span>토</span></div><div id="calendar" class="calendar" aria-label="날짜 선택"></div>
+<div class="archive-heading"><h2>모아둔 하루</h2><span id="entry-count">0</span></div>
+<label class="search"><span aria-hidden="true">⌕</span><input id="search" type="search" placeholder="기록 속 문장 찾기" aria-label="일기 검색"></label>
+<div id="entries" class="entries"></div>
+<div class="sidebar-bottom"><div class="backup-actions"><button id="export">백업 내보내기 ↗</button><button id="import">불러오기</button><input type="file" id="import-file" accept="application/json,.json" hidden></div><p>기록은 이 브라우저에만 저장돼요.<br>소중한 이야기는 가끔 백업해 주세요.</p></div>
+</aside>
+<main>
+<header class="topbar"><span>MY LITTLE JOURNAL</span><span class="save-state" id="save-state" role="status">편안하게 기록해 보세요</span></header>
+<section class="intro"><div><p class="eyebrow" id="season-label">SLOW DOWN, WRITE IT DOWN</p><h1>흘러가는 날들에,<br>작은 쉼표 하나.</h1><p class="intro-sub">특별하지 않아도 괜찮아요. 오늘의 마음을 남겨보세요.</p></div><div class="illustration" aria-hidden="true"><div class="sun"></div><div class="vase"></div><div class="stem stem-one"></div><div class="stem stem-two"></div><div class="leaf leaf-one"></div><div class="leaf leaf-two"></div><div class="leaf leaf-three"></div><div class="ground"></div></div></section>
+<article class="paper">
+<div class="paper-top"><div><p id="date-kicker" class="eyebrow"></p><h2 id="date-heading"></h2></div><span class="paper-mark" aria-hidden="true">✳</span></div>
+<div class="mood-row"><span>오늘의 마음</span><div id="moods" class="moods" role="group" aria-label="오늘의 기분"></div></div>
+<label class="sr-only" for="title">일기 제목</label><input id="title" class="entry-title" maxlength="160" placeholder="오늘은 어떤 하루였나요?" autocomplete="off">
+<label class="sr-only" for="body">일기 내용</label><textarea id="body" placeholder="기억하고 싶은 순간, 스쳐간 생각, 작은 감사까지.&#10;떠오르는 이야기를 자유롭게 적어보세요."></textarea>
+<div class="paper-footer"><span id="word-count">0자 · 나만의 속도로 기록하기</span><button id="delete" class="delete-button">기록 삭제</button></div>
+</article>
+<footer class="main-footer"><span>EVERY ORDINARY DAY HAS A STORY.</span><span>당신의 하루가 오래 머무는 곳, 사이.</span></footer>
+</main><div id="toast" role="status" class="toast" hidden></div>
+<dialog id="confirm-dialog"><h2>이 기록을 삭제할까요?</h2><p>삭제한 기록은 되돌릴 수 없어요.</p><form method="dialog"><button value="cancel">취소</button><button value="delete" class="danger">삭제하기</button></form></dialog>
+</body></html>
