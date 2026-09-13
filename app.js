@@ -21,7 +21,7 @@ let selected = dateKey(new Date()), shown = parseDate(selected), mood = '', toas
 function toast(message) { $('toast').textContent=message; $('toast').hidden=false; clearTimeout(toastTimer); toastTimer=setTimeout(()=>$('toast').hidden=true,4500); }
 function persist(next) {
   if (!storageReady) { $('save-state').textContent='저장 불가 · 백업을 내보내 주세요'; return false; }
-  try { localStorage.setItem(KEY,JSON.stringify(next)); $('save-state').textContent='✓ 이 브라우저에 저장됨'; return true; }
+  try { localStorage.setItem(KEY,JSON.stringify(next)); $('save-state').textContent='저장됨'; return true; }
   catch { $('save-state').textContent='저장 실패 · 백업을 내보내 주세요'; return false; }
 }
 function save() {
@@ -30,7 +30,7 @@ function save() {
   else delete entries[selected];
   persist(entries); renderCalendar(); renderEntries(); updateCount();
 }
-function updateCount() { $('word-count').textContent=`${$('body').value.length.toLocaleString()}자 · 나만의 속도로 기록하기`; $('delete').disabled=!entries[selected]; }
+function updateCount() { $('word-count').textContent=`${$('body').value.length.toLocaleString()}자`; $('delete').disabled=!entries[selected]; }
 function renderMoods() {
   $('moods').replaceChildren();
   for (const [id,icon,label] of moods) {
@@ -42,9 +42,8 @@ function select(key) {
   selected=key; shown=parseDate(key);
   const entry=entries[key] || {title:'',body:'',mood:''};
   $('title').value=entry.title; $('body').value=entry.body; mood=entry.mood;
-  $('date-kicker').textContent=`${shown.getFullYear()} · ${String(shown.getMonth()+1).padStart(2,'0')} · ${String(shown.getDate()).padStart(2,'0')}`;
-  $('date-heading').textContent=new Intl.DateTimeFormat('ko-KR',{month:'long',day:'numeric',weekday:'long'}).format(shown);
-  $('save-state').textContent=storageReady?(entries[key]?'✓ 이 브라우저에 저장됨':'편안하게 기록해 보세요'):'저장 불가 · 백업을 확인해 주세요';
+  $('date-heading').textContent=new Intl.DateTimeFormat('ko-KR',{year:'numeric',month:'long',day:'numeric',weekday:'long'}).format(shown);
+  $('save-state').textContent=storageReady?(entries[key]?'저장됨':''):'저장 불가 · 백업을 확인해 주세요';
   renderMoods();renderCalendar();renderEntries();updateCount();
 }
 function renderCalendar() {
@@ -56,25 +55,25 @@ function renderCalendar() {
     const key=dateKey(new Date(year,month,day)),button=document.createElement('button');
     button.textContent=day;button.setAttribute('aria-label',`${key}${entries[key]?' 기록 있음':''}`);button.setAttribute('aria-pressed',String(key===selected));
     if(key===selected)button.classList.add('selected'); if(key===dateKey(new Date()))button.classList.add('current');if(entries[key])button.classList.add('has-entry');
-    button.onclick=()=>select(key);$('calendar').append(button);
+    button.onclick=()=>{select(key);$('archive-dialog').close();};$('calendar').append(button);
   }
 }
 function renderEntries() {
   const query=$('search').value.trim().toLowerCase();
   const keys=Object.keys(entries).sort().reverse().filter(key=>`${entries[key].title} ${entries[key].body} ${key}`.toLowerCase().includes(query));
   $('entry-count').textContent=Object.keys(entries).length;$('entries').replaceChildren();
-  if(!keys.length) { const p=document.createElement('p');p.className='empty';p.textContent=query?'찾는 기록이 아직 없어요.':'아직 비어 있는 작은 책장. 오늘의 이야기로 첫 장을 채워보세요.';$('entries').append(p); }
+  if(!keys.length) { const p=document.createElement('p');p.className='empty';p.textContent=query?'찾는 기록이 아직 없어요.':'아직 기록이 없어요.';$('entries').append(p); }
   for(const key of keys) {
     const button=document.createElement('button');button.className=`entry-link${key===selected?' active':''}`;
     const small=document.createElement('small');small.textContent=`${key.replaceAll('-','.')}  ${moods.find(m=>m[0]===entries[key].mood)?.[1]||''}`;
     const strong=document.createElement('strong');strong.textContent=entries[key].title || entries[key].body.trim().split('\n')[0] || '마음을 기록한 하루';
-    button.append(small,strong);button.onclick=()=>select(key);$('entries').append(button);
+    button.append(small,strong);button.onclick=()=>{select(key);$('archive-dialog').close();};$('entries').append(button);
   }
 }
 $('title').addEventListener('input',save);$('body').addEventListener('input',save);$('search').addEventListener('input',renderEntries);
 $('prev').onclick=()=>{shown=new Date(shown.getFullYear(),shown.getMonth()-1,1);renderCalendar();};
 $('next').onclick=()=>{shown=new Date(shown.getFullYear(),shown.getMonth()+1,1);renderCalendar();};
-$('today').onclick=()=>{select(dateKey(new Date()));$('title').focus();$('title').scrollIntoView({behavior:'smooth',block:'center'});};
+$('today').onclick=()=>{$('archive-dialog').close();select(dateKey(new Date()));$('title').focus();$('title').scrollIntoView({behavior:'smooth',block:'center'});};
 $('delete').onclick=()=>$('confirm-dialog').showModal();
 $('confirm-dialog').addEventListener('close',()=>{if($('confirm-dialog').returnValue==='delete'){const next={...entries};delete next[selected];if(persist(next)){entries=next;select(selected);toast('기록을 삭제했어요.');}else toast('저장소에 접근할 수 없어 삭제하지 못했어요.');}});
 $('export').onclick=()=>{
@@ -96,3 +95,6 @@ $('import-file').onchange=async event=>{
 window.addEventListener('storage',event=>{if(event.key===KEY){try{entries=event.newValue?validate(JSON.parse(event.newValue)):{};select(selected);toast('다른 탭에서 바뀐 기록을 반영했어요.');}catch{toast('다른 탭의 데이터를 읽지 못했어요.');}}});
 select(selected);
 if(!storageReady)toast('저장된 데이터를 읽지 못했어요. 기존 데이터는 덮어쓰지 않습니다.');
+
+$('open-archive').onclick=()=>$('archive-dialog').showModal();
+$('close-archive').onclick=()=>$('archive-dialog').close();
